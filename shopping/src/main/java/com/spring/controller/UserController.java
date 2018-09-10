@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.spring.model.*;
@@ -20,7 +21,7 @@ import com.spring.util.jwtUtil;
 
 @RestController
 @RequestMapping("/user")
-public class MainController {
+public class UserController {
 
 	@Autowired
 	private UserRepository userRepo;
@@ -32,8 +33,14 @@ public class MainController {
 	
 	@PostMapping("/signup")
 	public ResponseEntity<String> addUser(@Valid @RequestBody User user) {
+		try {
 		userRepo.save(user);
 		return new ResponseEntity<String>(HttpStatus.CREATED);
+		}
+		catch(Exception e) {
+			System.out.println(e.toString());
+			return new ResponseEntity<String>(HttpStatus.CONFLICT);
+		}
 	}
 	
 	@PostMapping("/verify")
@@ -41,18 +48,45 @@ public class MainController {
 		
 		String email=credential.get("email");
 		String password=credential.get("password");
-		User loggedUser=userRepo.findByEmail(email);
+		User loggedUser=userRepo.findByEmailAndPassword(email, password);
 		Map<String,String> map=new HashMap<>();
-		if(loggedUser.getPassword().equals(password)) {
+		if(loggedUser!=null) {
 			String jwtToken=jwtutil.createToken(email, password);
-			map.put("status", "200");
-			map.put("message", "AUTHORIZED");
-			map.put("jToken", jwtToken);
+			map.put("Status", "200");
+			map.put("AUTH_TOKEN", jwtToken);
 			return new ResponseEntity<Map<String,String>>(map, HttpStatus.ACCEPTED);
 		}else {
 			
-			return new ResponseEntity<Map<String,String>>(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<Map<String,String>>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
+
+	@PostMapping("/addAddress")
+	public ResponseEntity<Map<String,String>> addAddress(@Valid @RequestBody Address address, @RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN ) {
+		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			User user=jwtutil.checkToken(AUTH_TOKEN);
+			user.setAddress(address);
+			address.setUser(user);
+			addrRepo.save(address);
+			return new ResponseEntity<Map<String,String>>(HttpStatus.ACCEPTED);
+		}
+		else {
+			return new ResponseEntity<Map<String,String>>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	@PostMapping("/getAddress")
+	public ResponseEntity<Address> getAddress(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN ) {
+		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			User user=jwtutil.checkToken(AUTH_TOKEN);
+			Address adr=addrRepo.findByUser(user);
+			return new ResponseEntity<Address>(adr,HttpStatus.ACCEPTED);
+		}
+		else {
+			return new ResponseEntity<Address>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	
 	
 }

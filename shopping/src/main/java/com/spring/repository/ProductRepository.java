@@ -7,7 +7,7 @@ import com.spring.model.*;
 
 @Repository
 @Transactional
-public interface AddressRepository extends JpaRepository<Address, Long>{
+public interface ProductRepository extends JpaRepository<Product, Long>{
 
-	Address findByUser(User user);
+	Product findByProductid(int productid);
 }
