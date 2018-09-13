@@ -2,6 +2,8 @@ package com.spring.model;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +15,18 @@ public class Bufcart implements Serializable{
 @Id
 @GeneratedValue(strategy=GenerationType.IDENTITY)
 private int bufcartId;
+
+@Column(nullable = true)
+private int orderId;
+public int getOrderId() {
+	return orderId;
+}
+
+
+public void setOrderId(int orderId) {
+	this.orderId = orderId;
+}
+
 
 private String email;
 

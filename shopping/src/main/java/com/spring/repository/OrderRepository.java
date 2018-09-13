@@ -9,11 +9,8 @@ import com.spring.model.*;
 
 @Repository
 @Transactional
-public interface CartRepository extends JpaRepository<Bufcart, Long>{
+public interface OrderRepository extends JpaRepository<PlaceOrder, Long>{
 
-	List<Bufcart> findByEmail(String email);
-	Bufcart findByBufcartIdAndEmail(int bufcartId,String email);
-	void deleteByBufcartIdAndEmail(int bufcartId,String email);
-	List<Bufcart> findAllByEmail(String email);
+	
 
 }

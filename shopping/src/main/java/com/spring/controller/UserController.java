@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.spring.model.*;
 import com.spring.repository.AddressRepository;
 import com.spring.repository.CartRepository;
+import com.spring.repository.OrderRepository;
 import com.spring.repository.ProductRepository;
 import com.spring.repository.UserRepository;
 import com.spring.util.jwtUtil;
@@ -40,6 +41,9 @@ public class UserController {
 	
 	@Autowired
 	private CartRepository cartRepo;
+	
+	@Autowired
+	private OrderRepository ordRepo;
 	
 	@Autowired
 	private jwtUtil jwtutil;
@@ -164,7 +168,7 @@ public class UserController {
 		}
 	}
 	
-	@DeleteMapping("/delCart")
+	@PostMapping("/delCart")
 	public ResponseEntity<String> delCart(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
 				@RequestParam(name="bufcartid") String bufcartid) throws IOException {
 		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
@@ -176,7 +180,36 @@ public class UserController {
 			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	// place order
+	
+	@PostMapping("/placeOrder")
+	public ResponseEntity<String> placeOrder(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN) throws IOException {
+		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			User loggedUser=jwtutil.checkToken(AUTH_TOKEN);
+			PlaceOrder po=new PlaceOrder();
+			po.setEmail(loggedUser.getEmail());
+			Date date=new Date();
+			po.setOrderDate(date);
+			po.setOrderStatus("PENDING");
+			double total=0;
+			List<Bufcart> buflist=cartRepo.findAllByEmail(loggedUser.getEmail());
+			for(Bufcart buf:buflist) {
+				total=+(buf.getQuantity()*buf.getPrice());
+			}
+			po.setTotalCost(total);
+			PlaceOrder res=ordRepo.save(po);
+			buflist.forEach(bufcart->{
+				bufcart.setOrderId(res.getOrderId());
+				cartRepo.save(bufcart);
+				
+			});
+			po.setTotalCost(total);
+			return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+		}
+		else {
+			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
 	
 	
 }
