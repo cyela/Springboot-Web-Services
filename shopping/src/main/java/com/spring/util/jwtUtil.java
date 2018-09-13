@@ -22,10 +22,11 @@ public class jwtUtil {
 	private final static String SUBJECT="USER_SHOPPING";
 	@Autowired
 	private UserRepository userRepo;
-	public  String createToken(String session_email, String session_pass) {
+	public  String createToken(String session_email, String session_pass,String session_type) {
 		Map<String, Object> map=new HashMap<>();
 		map.put("session_email", session_email);
 		map.put("session_pass", session_pass);
+		map.put("session_type", session_type);
 		
 		SignatureAlgorithm signAlg=SignatureAlgorithm.HS256;
 		String br=Jwts.builder()
@@ -40,7 +41,8 @@ public class jwtUtil {
 	
 	public User checkToken(String token) {
 		Claims claim=Jwts.parser().setSigningKey(Key).parseClaimsJws(token).getBody();
-		User user=userRepo.findByEmailAndPassword(claim.get("session_email").toString(),claim.get("session_pass").toString());
+		User user=userRepo.findByEmailAndPasswordAndUsertype(claim.get("session_email").toString(),
+				claim.get("session_pass").toString(),claim.get("session_type").toString());
 		return user;
 	}
 	

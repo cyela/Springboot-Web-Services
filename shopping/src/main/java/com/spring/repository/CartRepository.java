@@ -15,5 +15,5 @@ public interface CartRepository extends JpaRepository<Bufcart, Long>{
 	Bufcart findByBufcartIdAndEmail(int bufcartId,String email);
 	void deleteByBufcartIdAndEmail(int bufcartId,String email);
 	List<Bufcart> findAllByEmail(String email);
-
+	List<Bufcart> findAllByOrderId(int orderId);
 }

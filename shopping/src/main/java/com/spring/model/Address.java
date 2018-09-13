@@ -77,10 +77,4 @@ public class Address implements Serializable {
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
-
-
-
-
-
-	
 }
