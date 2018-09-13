@@ -10,7 +10,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -24,15 +26,16 @@ public class Product implements Serializable {
 	private String productname;
 	private double price;
 	private int quantity;
-	
 	@Lob
-	private Blob productimage;
+	private byte[] productimage;
+	
 	public int getProductid() {
 		return productid;
 	}
 	public void setProductid(int productid) {
 		this.productid = productid;
 	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -58,13 +61,24 @@ public class Product implements Serializable {
 		this.quantity = quantity;
 	}
 	
-	public Blob getProductimage() {
+	
+	public byte[] getProductimage() {
 		return productimage;
 	}
-	public void setProductimage(Blob productimage) {
+	public void setProductimage(byte[] productimage) {
 		this.productimage = productimage;
 	}
 	public Product() {
 		super();
+	}
+	public Product(int productid, String description, String productname, double price, int quantity,
+			byte[] productimage) {
+		super();
+		this.productid = productid;
+		this.description = description;
+		this.productname = productname;
+		this.price = price;
+		this.quantity = quantity;
+		this.productimage = productimage;
 	}
 }

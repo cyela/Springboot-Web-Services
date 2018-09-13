@@ -3,6 +3,7 @@ package com.spring.controller;
 import java.io.IOException;
 import java.sql.Blob;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -12,6 +13,7 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -39,9 +41,6 @@ public class AdminController {
 	@Autowired
 	private jwtUtil jwtutil;
 
-	@Autowired
-	private SessionFactory sessionFactory;
-	
 	@PostMapping("/verify")
 	public ResponseEntity<Map<String,String>> verifyUser(@Valid @RequestBody Map<String, String> credential) {
 		
@@ -60,7 +59,7 @@ public class AdminController {
 	}
 
 	@PostMapping("/addProduct")
-	public ResponseEntity<String> addAddress(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
+	public ResponseEntity<String> addProduct(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
 			@RequestParam(name="file") MultipartFile prodImage,
 				@RequestParam(name="description") String description,
 					@RequestParam(name="price") String price,
@@ -69,13 +68,12 @@ public class AdminController {
 			) throws IOException {
 		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
 			
-			Hibernate.getLobCreator(sessionFactory.openSession()).createBlob(prodImage.getBytes());
 			Product prod=new Product();
 			prod.setDescription(description);
 			prod.setPrice(Double.parseDouble(price));
 			prod.setProductname(productname);
 			prod.setQuantity(Integer.parseInt(quantity));
-//			prod.setProductimage(imgArr);
+			prod.setProductimage(prodImage.getBytes());
 			prodRepo.save(prod);
 			return new ResponseEntity<String>(HttpStatus.ACCEPTED);
 		}
@@ -83,7 +81,54 @@ public class AdminController {
 			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-
 	
+	@PostMapping("/getProducts")
+	public ResponseEntity<List<Product>> getProducts(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN) throws IOException {
+		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			List<Product> prodList=prodRepo.findAll();
+			
+			return new ResponseEntity<List<Product>>(prodList,HttpStatus.ACCEPTED);
+		}
+		else {
+			return new ResponseEntity<List<Product>>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+
+	@PostMapping("/updateProducts")
+	public ResponseEntity<String> updateProducts(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN, 
+			@RequestParam(name="file") MultipartFile prodImage,
+				@RequestParam(name="description") String description,
+					@RequestParam(name="price") String price,
+						@RequestParam(name="productname") String productname,
+							@RequestParam(name="quantity") String quantity,
+								@RequestParam(name="productid") String productid) throws IOException {
+		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			
+			Product prod=new Product(Integer.parseInt(productid), 
+						description, productname, Double.parseDouble(price),
+							Integer.parseInt(quantity), prodImage.getBytes());
+			prodRepo.save(prod);
+			
+			return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+		}
+		else {
+			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
+	
+	@DeleteMapping("/delProduct")
+	public ResponseEntity<String> delProduct(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN, 
+			@RequestParam(name="productid") String productid ) throws IOException {
+		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			
+			
+			prodRepo.deleteByProductid(Integer.parseInt(productid));
+			
+			return new ResponseEntity<String>(HttpStatus.ACCEPTED);
+		}
+		else {
+			return new ResponseEntity<String>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 	
 }
