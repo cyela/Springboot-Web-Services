@@ -11,6 +11,6 @@ import com.spring.model.*;
 @Transactional
 public interface OrderRepository extends JpaRepository<PlaceOrder, Long>{
 
-	
+	PlaceOrder findByOrderId(int orderId);
 
 }

@@ -199,7 +199,7 @@ public class AdminController {
 				}
 				return new ResponseEntity<viewOrdResp>(resp,HttpStatus.ACCEPTED);
 			}catch(Exception e) {
-				resp.setStatus("413");
+				resp.setStatus("414");
 				resp.setMessage(e.toString());
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
 				return new ResponseEntity<viewOrdResp>(resp,HttpStatus.ACCEPTED);
@@ -211,5 +211,31 @@ public class AdminController {
 			return new ResponseEntity<viewOrdResp>(HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
-	
+	@PostMapping("/updateOrder")
+	public ResponseEntity<serverResp> updateOrders(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN, 
+			@RequestParam(name="orderId") String orderId, @RequestParam(name="orderStatus") String orderStatus) throws IOException {
+		
+		serverResp resp=new serverResp();
+		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			try {
+				PlaceOrder pc=ordRepo.findByOrderId(Integer.parseInt(orderId));
+				pc.setOrderStatus(orderStatus);
+				ordRepo.save(pc);
+				resp.setStatus("200");
+				resp.setMessage("UPD_ORD");
+				resp.setAUTH_TOKEN(AUTH_TOKEN);
+				return new ResponseEntity<serverResp>(resp,HttpStatus.ACCEPTED);
+			}catch(Exception e) {
+				resp.setStatus("415");
+				resp.setMessage(e.toString());
+				resp.setAUTH_TOKEN(AUTH_TOKEN);
+				return new ResponseEntity<serverResp>(resp,HttpStatus.ACCEPTED);
+			}
+		}
+		else {
+			resp.setStatus("401");
+			resp.setMessage("IN-VALID");
+			return new ResponseEntity<serverResp>(HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 }
