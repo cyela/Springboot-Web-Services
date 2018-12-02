@@ -28,6 +28,14 @@ public void setOrderId(int orderId) {
 }
 
 
+@Override
+public String toString() {
+	return "Bufcart [bufcartId=" + bufcartId + ", orderId=" + orderId + ", email=" + email + ", dateAdded=" + dateAdded
+			+ ", quantity=" + quantity + ", price=" + price + ", productId=" + productId + ", productname="
+			+ productname + "]";
+}
+
+
 private String email;
 
 private Date dateAdded;
@@ -35,6 +43,18 @@ private Date dateAdded;
 private int quantity;
 private double price;
 private int productId;
+
+private String productname;
+
+public String getProductname() {
+	return productname;
+}
+
+
+public void setProductname(String productname) {
+	this.productname = productname;
+}
+
 
 public int getProductId() {
 	return productId;

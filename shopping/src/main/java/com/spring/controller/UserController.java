@@ -2,6 +2,7 @@ package com.spring.controller;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +24,7 @@ import com.spring.repository.*;
 import com.spring.response.*;
 import com.spring.util.jwtUtil;
 
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -73,7 +75,7 @@ public class UserController {
 			resp.setStatus("200");
 			resp.setMessage("VALID");
 			resp.setAUTH_TOKEN(jwtToken);
-			return new ResponseEntity<serverResp>(resp, HttpStatus.ACCEPTED);
+			return new ResponseEntity<serverResp>(resp, HttpStatus.OK);
 		}else {
 			resp.setStatus("401");
 			resp.setMessage("IN-VALID");
@@ -89,7 +91,7 @@ public class UserController {
 				User user=jwtutil.checkToken(AUTH_TOKEN);
 				user.setAddress(address);
 				address.setUser(user);
-				Address adr=addrRepo.save(address);
+				Address adr=addrRepo.saveAndFlush(address);
 				resp.setStatus("200");
 				resp.setMessage("ADR_UPD");
 				resp.setUser(user);
@@ -113,30 +115,39 @@ public class UserController {
 	}
 	
 	@PostMapping("/getAddress")
-	public ResponseEntity<userResp> getAddress(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN ) {
-		userResp resp=new userResp();
+	public ResponseEntity<response> getAddress(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN ) {
+		response resp=new response();
 		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
 			try {
 				User user=jwtutil.checkToken(AUTH_TOKEN);
 				Address adr=addrRepo.findByUser(user);
+				HashMap<String,String> map=new HashMap<>();
+				map.put("address", adr.getAddress());
+				map.put("city", adr.getCity());
+				map.put("state", adr.getState());
+				map.put("country", adr.getCountry());
+				map.put("zipcode", String.valueOf(adr.getZipcode()));
+				map.put("phonenumber", adr.getPhonenumber());
+				
 				resp.setStatus("200");
 				resp.setMessage("ADR_UPD");
-				resp.setUser(user);
-				resp.setAddress(adr);
+				resp.setMap(map);
+				//resp.setAddress(adr);
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
-				return new ResponseEntity<userResp>(resp,HttpStatus.ACCEPTED);
+				
+				return new ResponseEntity<response>(resp,HttpStatus.ACCEPTED);
 			}
 			catch(Exception e) {
 				resp.setStatus("403");
 				resp.setMessage(e.toString());
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
-				return new ResponseEntity<userResp>(resp,HttpStatus.ACCEPTED);
+				return new ResponseEntity<response>(resp,HttpStatus.ACCEPTED);
 			}
 		}
 		else {
 			resp.setStatus("401");
 			resp.setMessage("IN-VALID");
-			return new ResponseEntity<userResp>(resp,HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<response>(resp,HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 	
@@ -166,7 +177,7 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/addToCart")
+	@GetMapping("/addToCart")
 	public ResponseEntity<serverResp> addToCart(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
 			@RequestParam("productId") String productId) throws IOException {
 		serverResp resp=new serverResp();
@@ -180,6 +191,7 @@ public class UserController {
 				buf.setQuantity(1);
 				buf.setPrice(cartItem.getPrice());
 				buf.setProductId(Integer.parseInt(productId));
+				buf.setProductname(cartItem.getProductname());
 				Date date=new Date();
 				buf.setDateAdded(date);
 				cartRepo.save(buf);
@@ -227,7 +239,7 @@ public class UserController {
 		}
 	}
 	
-	@PostMapping("/updateCart")
+	@GetMapping("/updateCart")
 	public ResponseEntity<cartResp> updateCart(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
 				@RequestParam(name="bufcartid") String bufcartid,@RequestParam(name="quantity") String quantity) throws IOException {
 		cartResp resp=new cartResp();
@@ -258,7 +270,7 @@ public class UserController {
 		}
 	}
 	
-	@PostMapping("/delCart")
+	@GetMapping("/delCart")
 	public ResponseEntity<cartResp> delCart(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
 				@RequestParam(name="bufcartid") String bufcartid) throws IOException {
 		cartResp resp=new cartResp();
@@ -287,33 +299,35 @@ public class UserController {
 		}
 	}
 	
-	@PostMapping("/placeOrder")
+	@GetMapping("/placeOrder")
 	public ResponseEntity<serverResp> placeOrder(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN) throws IOException {
 		serverResp resp=new serverResp();
 		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
+			System.out.println("camed");
 			try {
-			User loggedUser=jwtutil.checkToken(AUTH_TOKEN);
-			PlaceOrder po=new PlaceOrder();
-			po.setEmail(loggedUser.getEmail());
-			Date date=new Date();
-			po.setOrderDate(date);
-			po.setOrderStatus("PENDING");
-			double total=0;
-			List<Bufcart> buflist=cartRepo.findAllByEmail(loggedUser.getEmail());
-			for(Bufcart buf:buflist) {
-				total=+(buf.getQuantity()*buf.getPrice());
-			}
-			po.setTotalCost(total);
-			PlaceOrder res=ordRepo.save(po);
-			buflist.forEach(bufcart->{
-				bufcart.setOrderId(res.getOrderId());
-				cartRepo.save(bufcart);
-				
-			});
-			resp.setStatus("200");
-			resp.setMessage("PLA_ORD");
-			resp.setAUTH_TOKEN(AUTH_TOKEN);
-			return new ResponseEntity<serverResp>(HttpStatus.ACCEPTED);
+				User loggedUser=jwtutil.checkToken(AUTH_TOKEN);
+				PlaceOrder po=new PlaceOrder();
+				po.setEmail(loggedUser.getEmail());
+				Date date=new Date();
+				po.setOrderDate(date);
+				po.setOrderStatus("PENDING");
+				double total=0;
+				List<Bufcart> buflist=cartRepo.findAllByEmail(loggedUser.getEmail());
+				for(Bufcart buf:buflist) {
+					total=+(buf.getQuantity()*buf.getPrice());
+				}
+				po.setTotalCost(total);
+				PlaceOrder res=ordRepo.save(po);
+				System.out.println(res.toString());
+				buflist.forEach(bufcart->{
+					bufcart.setOrderId(res.getOrderId());
+					cartRepo.save(bufcart);
+					
+				});
+				resp.setStatus("200");
+				resp.setMessage("PLA_ORD");
+				resp.setAUTH_TOKEN(AUTH_TOKEN);
+				return new ResponseEntity<serverResp>(resp,HttpStatus.ACCEPTED);
 			}catch(Exception e) {
 				resp.setStatus("409");
 				resp.setMessage(e.toString());

@@ -1,20 +1,28 @@
 package com.spring.response;
 import java.io.Serializable;
+import java.util.HashMap;
 
 import com.spring.model.*;
-public class userResp implements Serializable{
+public class response implements Serializable{
 	
 	private String status;
 	private String message;
 	private String AUTH_TOKEN;
+	private HashMap<String,String> map;
+	
+	public HashMap<String, String> getMap() {
+		return map;
+	}
+	public void setMap(HashMap<String, String> map) {
+		this.map = map;
+	}
 	public String getAUTH_TOKEN() {
 		return AUTH_TOKEN;
 	}
 	public void setAUTH_TOKEN(String aUTH_TOKEN) {
 		AUTH_TOKEN = aUTH_TOKEN;
 	}
-	private User user;
-	private Address address;
+	
 	public String getStatus() {
 		return status;
 	}
@@ -27,18 +35,7 @@ public class userResp implements Serializable{
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
-	public Address getAddress() {
-		return address;
-	}
-	public void setAddress(Address address) {
-		this.address = address;
-	}
+	
 	
 	
 }

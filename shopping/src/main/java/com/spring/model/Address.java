@@ -77,4 +77,11 @@ public class Address implements Serializable {
 	public void setPhonenumber(String phonenumber) {
 		this.phonenumber = phonenumber;
 	}
+	@Override
+	public String toString() {
+		return "Address [id=" + id + ", address=" + address + ", city=" + city + ", state=" + state + ", country="
+				+ country + ", zipcode=" + zipcode + ", phonenumber=" + phonenumber + ", user=" + user + "]";
+	}
+	
+	
 }

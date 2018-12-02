@@ -10,6 +10,8 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -23,7 +25,7 @@ import com.spring.repository.*;
 import com.spring.response.*;
 import com.spring.util.jwtUtil;
 
-
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -54,7 +56,7 @@ public class AdminController {
 			resp.setStatus("200");
 			resp.setMessage("VALID");
 			resp.setAUTH_TOKEN(jwtToken);
-			return new ResponseEntity<serverResp>(resp, HttpStatus.ACCEPTED);
+			return new ResponseEntity<serverResp>(resp, HttpStatus.OK);
 		}else {
 			resp.setStatus("401");
 			resp.setMessage("IN-VALID");
@@ -63,14 +65,14 @@ public class AdminController {
 	}
 
 	@PostMapping("/addProduct")
-	public ResponseEntity<serverResp> addProduct(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
+	public ResponseEntity<prodResp> addProduct(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN,
 			@RequestParam(name="file") MultipartFile prodImage,
 				@RequestParam(name="description") String description,
 					@RequestParam(name="price") String price,
 						@RequestParam(name="productname") String productname,
 							@RequestParam(name="quantity") String quantity
 			) throws IOException {
-		serverResp resp=new serverResp();
+		prodResp resp=new prodResp();
 		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
 			try {
 				Product prod=new Product();
@@ -83,19 +85,20 @@ public class AdminController {
 				resp.setStatus("200");
 				resp.setMessage("ADD_PRO");
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
-				return new ResponseEntity<serverResp>(resp,HttpStatus.ACCEPTED);
+				resp.setOblist(prodRepo.findAll());
+				return new ResponseEntity<prodResp>(resp,HttpStatus.ACCEPTED);
 			}catch(Exception e) {
 				resp.setStatus("410");
 				resp.setMessage(e.toString());
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
-				return new ResponseEntity<serverResp>(resp,HttpStatus.ACCEPTED);
+				return new ResponseEntity<prodResp>(resp,HttpStatus.ACCEPTED);
 			}
 		}
 			
 		else {
 			resp.setStatus("401");
 			resp.setMessage("IN-VALID");
-			return new ResponseEntity<serverResp>(resp,HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<prodResp>(resp,HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 	
@@ -125,7 +128,7 @@ public class AdminController {
 
 	@PostMapping("/updateProducts")
 	public ResponseEntity<serverResp> updateProducts(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN, 
-			@RequestParam(name="file") MultipartFile prodImage,
+			@RequestParam(name="file",required=false) MultipartFile prodImage,
 				@RequestParam(name="description") String description,
 					@RequestParam(name="price") String price,
 						@RequestParam(name="productname") String productname,
@@ -134,9 +137,18 @@ public class AdminController {
 		serverResp resp=new serverResp();
 		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
 			try {
-			Product prod=new Product(Integer.parseInt(productid), 
-						description, productname, Double.parseDouble(price),
-							Integer.parseInt(quantity), prodImage.getBytes());
+				Product prodOrg;
+				Product prod;
+				if(prodImage!=null) {
+					prod=new Product(Integer.parseInt(productid), 
+							description, productname, Double.parseDouble(price),
+								Integer.parseInt(quantity), prodImage.getBytes());
+				}else {
+					prodOrg=prodRepo.findByProductid(Integer.parseInt(productid));
+					prod=new Product(Integer.parseInt(productid), 
+							description, productname, Double.parseDouble(price),
+								Integer.parseInt(quantity), prodOrg.getProductimage());
+				}
 			prodRepo.save(prod);
 			resp.setStatus("200");
 			resp.setMessage("UPD_PRO");
@@ -157,32 +169,33 @@ public class AdminController {
 		}
 	}
 	
-	@PostMapping("/delProduct")
-	public ResponseEntity<serverResp> delProduct(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN, 
+	@GetMapping("/delProduct")
+	public ResponseEntity<prodResp> delProduct(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN, 
 			@RequestParam(name="productid") String productid ) throws IOException {
-		serverResp resp=new serverResp();
+		prodResp resp=new prodResp();
 		if(jwtutil.checkToken(AUTH_TOKEN)!=null) {
 			try {
 				prodRepo.deleteByProductid(Integer.parseInt(productid));
 				resp.setStatus("200");
 				resp.setMessage("DEL_PRO");
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
-				return new ResponseEntity<serverResp>(HttpStatus.ACCEPTED);
+				resp.setOblist(prodRepo.findAll());
+				return new ResponseEntity<prodResp>(resp,HttpStatus.ACCEPTED);
 			}catch(Exception e) {
 				resp.setStatus("413");
 				resp.setMessage(e.toString());
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
-				return new ResponseEntity<serverResp>(resp,HttpStatus.ACCEPTED);
+				return new ResponseEntity<prodResp>(resp,HttpStatus.ACCEPTED);
 			}
 		}
 		else {
 			resp.setStatus("401");
 			resp.setMessage("IN-VALID");
-			return new ResponseEntity<serverResp>(resp,HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<prodResp>(resp,HttpStatus.NOT_ACCEPTABLE);
 		}
 	}
 	
-	@PostMapping("/viewOrders")
+	@GetMapping("/viewOrders")
 	public ResponseEntity<viewOrdResp> viewOrders(@RequestHeader(name="AUTH_TOKEN") String AUTH_TOKEN) throws IOException {
 		
 		viewOrdResp resp=new viewOrdResp();
@@ -191,12 +204,20 @@ public class AdminController {
 				resp.setStatus("200");
 				resp.setMessage("VW_ORD");
 				resp.setAUTH_TOKEN(AUTH_TOKEN);
-				List<orderResp> orderList=null;
-				for(PlaceOrder pc:ordRepo.findAll()) {
-					orderResp ord=new orderResp();
-					ord.setOrderId(pc.getOrderId());
-					ord.setCartList(cartRepo.findAllByOrderId(pc.getOrderId()));
+				List<order> orderList=new ArrayList<>();
+				//cartRepo;
+				
+				order ord;
+				List<PlaceOrder> poList=ordRepo.findAll();
+				for(PlaceOrder p:poList) {
+					ord=new order();
+					ord.setOrderBy(p.getEmail());
+					ord.setOrderId(p.getOrderId());
+					ord.setOrderStatus(p.getOrderStatus());
+					ord.setProducts(cartRepo.findAllByOrderId(p.getOrderId()));
+					orderList.add(ord);
 				}
+				resp.setOrderlist(orderList);
 				return new ResponseEntity<viewOrdResp>(resp,HttpStatus.ACCEPTED);
 			}catch(Exception e) {
 				resp.setStatus("414");

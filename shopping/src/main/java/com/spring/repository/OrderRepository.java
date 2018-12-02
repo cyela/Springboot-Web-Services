@@ -12,5 +12,6 @@ import com.spring.model.*;
 public interface OrderRepository extends JpaRepository<PlaceOrder, Long>{
 
 	PlaceOrder findByOrderId(int orderId);
+	List<PlaceOrder> findAll();
 
 }
