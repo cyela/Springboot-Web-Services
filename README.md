@@ -5,6 +5,7 @@
   * Adding products
   * Updating products
   * Deleting products
+  * Manage Orders
 * Customer
   * Registering into System
   * Login into Website
