@@ -1,6 +1,5 @@
 package com.spring.model;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -10,13 +9,13 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="PlaceOrder")
+@Table(name = "PlaceOrder")
 public class PlaceOrder {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int orderId;
-	private String email,orderStatus;
+	private String email, orderStatus;
 	private Date orderDate;
 	private double totalCost;
 
@@ -35,8 +34,6 @@ public class PlaceOrder {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	
 
 	public Date getOrderDate() {
 		return orderDate;
@@ -62,8 +59,6 @@ public class PlaceOrder {
 		this.orderStatus = orderStatus;
 	}
 
-	
-
 	public PlaceOrder(int orderId, String email, String orderStatus, Date orderDate, double totalCost) {
 		super();
 		this.orderId = orderId;
@@ -76,5 +71,5 @@ public class PlaceOrder {
 	public PlaceOrder() {
 		super();
 	}
-	
+
 }

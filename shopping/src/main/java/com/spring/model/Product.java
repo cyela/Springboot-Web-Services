@@ -1,26 +1,21 @@
 package com.spring.model;
 
 import java.io.Serializable;
-import java.sql.Blob;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Product")
+@Table(name = "Product")
 public class Product implements Serializable {
+
+	private static final long serialVersionUID = -7446162716367847201L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int productid;
 	private String description;
 	private String productname;
@@ -28,10 +23,11 @@ public class Product implements Serializable {
 	private int quantity;
 	@Lob
 	private byte[] productimage;
-	
+
 	public int getProductid() {
 		return productid;
 	}
+
 	public void setProductid(int productid) {
 		this.productid = productid;
 	}
@@ -39,38 +35,47 @@ public class Product implements Serializable {
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public String getProductname() {
 		return productname;
 	}
+
 	public void setProductname(String productname) {
 		this.productname = productname;
 	}
+
 	public double getPrice() {
 		return price;
 	}
+
 	public void setPrice(double price) {
 		this.price = price;
 	}
+
 	public int getQuantity() {
 		return quantity;
 	}
+
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	
-	
+
 	public byte[] getProductimage() {
 		return productimage;
 	}
+
 	public void setProductimage(byte[] productimage) {
 		this.productimage = productimage;
 	}
+
 	public Product() {
 		super();
 	}
+
 	public Product(int productid, String description, String productname, double price, int quantity,
 			byte[] productimage) {
 		super();

@@ -10,111 +10,95 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Bufcart implements Serializable{
+public class Bufcart implements Serializable {
 
-@Id
-@GeneratedValue(strategy=GenerationType.IDENTITY)
-private int bufcartId;
+	private static final long serialVersionUID = 4049687597028261161L;
 
-@Column(nullable = true)
-private int orderId;
-public int getOrderId() {
-	return orderId;
-}
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int bufcartId;
 
+	@Column(nullable = true)
+	private int orderId;
 
-public void setOrderId(int orderId) {
-	this.orderId = orderId;
-}
+	public int getOrderId() {
+		return orderId;
+	}
 
+	public void setOrderId(int orderId) {
+		this.orderId = orderId;
+	}
 
-@Override
-public String toString() {
-	return "Bufcart [bufcartId=" + bufcartId + ", orderId=" + orderId + ", email=" + email + ", dateAdded=" + dateAdded
-			+ ", quantity=" + quantity + ", price=" + price + ", productId=" + productId + ", productname="
-			+ productname + "]";
-}
+	@Override
+	public String toString() {
+		return "Bufcart [bufcartId=" + bufcartId + ", orderId=" + orderId + ", email=" + email + ", dateAdded="
+				+ dateAdded + ", quantity=" + quantity + ", price=" + price + ", productId=" + productId
+				+ ", productname=" + productname + "]";
+	}
 
+	private String email;
 
-private String email;
+	private Date dateAdded;
 
-private Date dateAdded;
+	private int quantity;
+	private double price;
+	private int productId;
 
-private int quantity;
-private double price;
-private int productId;
+	private String productname;
 
-private String productname;
+	public String getProductname() {
+		return productname;
+	}
 
-public String getProductname() {
-	return productname;
-}
+	public void setProductname(String productname) {
+		this.productname = productname;
+	}
 
+	public int getProductId() {
+		return productId;
+	}
 
-public void setProductname(String productname) {
-	this.productname = productname;
-}
+	public void setProductId(int productId) {
+		this.productId = productId;
+	}
 
+	public int getBufcartId() {
+		return bufcartId;
+	}
 
-public int getProductId() {
-	return productId;
-}
+	public void setBufcartId(int bufcartId) {
+		this.bufcartId = bufcartId;
+	}
 
+	public String getEmail() {
+		return email;
+	}
 
-public void setProductId(int productId) {
-	this.productId = productId;
-}
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
+	public Date getDateAdded() {
+		return dateAdded;
+	}
 
-public int getBufcartId() {
-	return bufcartId;
-}
+	public void setDateAdded(Date dateAdded) {
+		this.dateAdded = dateAdded;
+	}
 
+	public int getQuantity() {
+		return quantity;
+	}
 
-public void setBufcartId(int bufcartId) {
-	this.bufcartId = bufcartId;
-}
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 
-public String getEmail() {
-	return email;
-}
+	public double getPrice() {
+		return price;
+	}
 
-
-public void setEmail(String email) {
-	this.email = email;
-}
-
-
-public Date getDateAdded() {
-	return dateAdded;
-}
-
-
-public void setDateAdded(Date dateAdded) {
-	this.dateAdded = dateAdded;
-}
-
-
-public int getQuantity() {
-	return quantity;
-}
-
-
-public void setQuantity(int quantity) {
-	this.quantity = quantity;
-}
-
-
-public double getPrice() {
-	return price;
-}
-
-
-public void setPrice(double price) {
-	this.price = price;
-}
-
-
-	
-	
+	public void setPrice(double price) {
+		this.price = price;
+	}
 }

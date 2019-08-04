@@ -1,4 +1,5 @@
 package com.example.demo;
+
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -10,74 +11,69 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 @EnableTransactionManagement
 public class DBConfig {
-    @Value("${datasource.driver}")
-    private String DRIVER;
+	@Value("${datasource.driver}")
+	private String DRIVER;
 
-    @Value("${datasource.password}")
-    private String PASSWORD;
+	@Value("${datasource.password}")
+	private String PASSWORD;
 
-    @Value("${datasource.url}")
-    private String URL;
+	@Value("${datasource.url}")
+	private String URL;
 
-    @Value("${datasource.username}")
-    private String USERNAME;
+	@Value("${datasource.username}")
+	private String USERNAME;
 
-    @Value("${hibernate.dialect}")
-    private String DIALECT;
+	@Value("${hibernate.dialect}")
+	private String DIALECT;
 
-    @Value("${hibernate.show_sql}")
-    private String SHOW_SQL;
+	@Value("${hibernate.show_sql}")
+	private String SHOW_SQL;
 
-    @Value("${hibernate.hbm2ddl.auto}")
-    private String HBM2DDL_AUTO;
+	@Value("${hibernate.hbm2ddl.auto}")
+	private String HBM2DDL_AUTO;
 
-    @Value("${entitymanager.packagesToScan}")
-    private String PACKAGES_TO_SCAN;
+	@Value("${entitymanager.packagesToScan}")
+	private String PACKAGES_TO_SCAN;
 
-    @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(DRIVER);
-        dataSource.setUrl("jdbc:mysql://localhost:3306/webservice");
-        dataSource.setUsername(USERNAME);
-        dataSource.setPassword(PASSWORD);
-        return dataSource;
-    }
+	@Bean
+	public DataSource dataSource() {
+		DriverManagerDataSource dataSource = new DriverManagerDataSource();
+		dataSource.setDriverClassName(DRIVER);
+		dataSource.setUrl("jdbc:mysql://localhost:3306/webservice");
+		dataSource.setUsername(USERNAME);
+		dataSource.setPassword(PASSWORD);
+		return dataSource;
+	}
 
-    @Bean
-    public LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan(PACKAGES_TO_SCAN);
-        Properties hibernateProperties = new Properties();
-        hibernateProperties.put("hibernate.dialect", DIALECT);
-        hibernateProperties.put("hibernate.show_sql", SHOW_SQL);
-        hibernateProperties.put("hibernate.hbm2ddl.auto", HBM2DDL_AUTO);
-        sessionFactory.setHibernateProperties(hibernateProperties);
+	@Bean
+	public LocalSessionFactoryBean sessionFactory() {
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(dataSource());
+		sessionFactory.setPackagesToScan(PACKAGES_TO_SCAN);
+		Properties hibernateProperties = new Properties();
+		hibernateProperties.put("hibernate.dialect", DIALECT);
+		hibernateProperties.put("hibernate.show_sql", SHOW_SQL);
+		hibernateProperties.put("hibernate.hbm2ddl.auto", HBM2DDL_AUTO);
+		sessionFactory.setHibernateProperties(hibernateProperties);
 
-        return sessionFactory;
-    }
+		return sessionFactory;
+	}
 
-    @Bean
-    public HibernateTransactionManager transactionManager() {
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactory().getObject());
-        return transactionManager;
-    }
-  /*  @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurerAdapter() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/user").allowedOrigins("http://localhost:3000");
-            }
-        };
-    }*/
+	@Bean
+	public HibernateTransactionManager transactionManager() {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(sessionFactory().getObject());
+		return transactionManager;
+	}
+	/*
+	 * @Bean public WebMvcConfigurer corsConfigurer() { return new
+	 * WebMvcConfigurerAdapter() {
+	 *
+	 * @Override public void addCorsMappings(CorsRegistry registry) {
+	 * registry.addMapping("/user").allowedOrigins("http://localhost:3000"); } }; }
+	 */
 }
