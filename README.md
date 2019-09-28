@@ -1,4 +1,4 @@
-### RESTfull services (Spring boot)
+### RESTful services (Spring boot)
 #### API build for an E-Commerce Application, provides below services for Admin & Customer CRUD operations and also handles authenticted user sessions 
 Services:
 * Admin
