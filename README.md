@@ -1,6 +1,6 @@
-### SpringBoot Web Services
-#### Application provides webservices for both Admin & Customer CRUD operations, Session Management for a E-Commerce Application.
-#### Following are the operations that can be performed by the Respective User
+### RESTfull services (Spring boot)
+#### API build for an E-Commerce Application, provides below services for Admin & Customer CRUD operations and also handles authenticted user sessions 
+Services:
 * Admin
   * Adding products
   * Updating products
@@ -15,6 +15,7 @@
   * Placing the order
 
 * Technologies: 
+  * Java 1.8
   * Spring Boot
   * Hibernate with JPA 
   * MySQL
