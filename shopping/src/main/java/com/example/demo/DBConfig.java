@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class DBConfig {
-	@Value("${datasource.driver}")
-	private String DRIVER;
+	// @Value("${datasource.driverClassName}")
+	// private String DRIVER;
 
 	@Value("${datasource.password}")
 	private String PASSWORD;
@@ -33,7 +33,7 @@ public class DBConfig {
 	@Value("${hibernate.show_sql}")
 	private String SHOW_SQL;
 
-	@Value("${hibernate.hbm2ddl.auto}")
+	@Value("${hibernate.ddl-auto}")
 	private String HBM2DDL_AUTO;
 
 	@Value("${entitymanager.packagesToScan}")
@@ -42,14 +42,14 @@ public class DBConfig {
 	@Bean
 	public DataSource dataSource() {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(DRIVER);
-		dataSource.setUrl("jdbc:mysql://localhost:3306/webservice");
+		dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+		dataSource.setUrl(URL);
 		dataSource.setUsername(USERNAME);
 		dataSource.setPassword(PASSWORD);
 		return dataSource;
 	}
 
-	@Bean
+	@Bean(name = "entityManagerFactory")
 	public LocalSessionFactoryBean sessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(dataSource());

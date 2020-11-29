@@ -1,6 +1,7 @@
 package com.spring.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -21,6 +23,26 @@ public class User implements Serializable {
 	private String username;
 	private String password;
 	private String usertype;
+	private boolean isEnabled;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+	private List<Authorities> roles;
+
+	public List<Authorities> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(List<Authorities> roles) {
+		this.roles = roles;
+	}
+
+	public boolean isEnabled() {
+		return isEnabled;
+	}
+
+	public void setEnabled(boolean isEnabled) {
+		this.isEnabled = isEnabled;
+	}
 
 	public int getUserid() {
 		return userid;
