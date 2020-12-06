@@ -1,19 +1,18 @@
 package com.spring.response;
 
-public class serverResp {
+public class ServerResponse {
 	private String status;
 	private String message;
-	private String AUTH_TOKEN;
+	private String authToken;
+	private String userType;
 
-	public String getAUTH_TOKEN() {
-		return AUTH_TOKEN;
+	public String getAuthToken() {
+		return authToken;
 	}
 
-	public void setAUTH_TOKEN(String aUTH_TOKEN) {
-		this.AUTH_TOKEN = aUTH_TOKEN;
+	public void setAuthToken(String authToken) {
+		this.authToken = authToken;
 	}
-
-	private Object object;
 
 	public String getStatus() {
 		return status;
@@ -31,16 +30,16 @@ public class serverResp {
 		this.message = message;
 	}
 
-	public serverResp() {
+	public ServerResponse() {
 		super();
 	}
 
-	public Object getObject() {
-		return object;
+	public String getUserType() {
+		return userType;
 	}
 
-	public void setObject(Object object) {
-		this.object = object;
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 
 }

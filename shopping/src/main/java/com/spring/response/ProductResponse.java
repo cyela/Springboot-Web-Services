@@ -2,13 +2,13 @@ package com.spring.response;
 
 import java.util.List;
 
-import com.spring.model.Bufcart;
+import com.spring.model.Product;
 
-public class cartResp {
+public class ProductResponse {
 	private String status;
 	private String message;
 	private String AUTH_TOKEN;
-	private List<Bufcart> oblist;
+	private List<Product> oblist;
 
 	public String getStatus() {
 		return status;
@@ -34,11 +34,12 @@ public class cartResp {
 		AUTH_TOKEN = aUTH_TOKEN;
 	}
 
-	public List<Bufcart> getOblist() {
+	public List<Product> getOblist() {
 		return oblist;
 	}
 
-	public void setOblist(List<Bufcart> oblist) {
+	public void setOblist(List<Product> oblist) {
 		this.oblist = oblist;
 	}
+
 }

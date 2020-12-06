@@ -16,9 +16,10 @@ public class Bufcart implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "bufcart_id")
 	private int bufcartId;
 
-	@Column(nullable = true)
+	@Column(name = "order_id", nullable = true)
 	private int orderId;
 
 	public int getOrderId() {
@@ -38,10 +39,12 @@ public class Bufcart implements Serializable {
 
 	private String email;
 
+	@Column(name = "date_added")
 	private Date dateAdded;
 
 	private int quantity;
 	private double price;
+	@Column(name = "product_id")
 	private int productId;
 
 	private String productname;

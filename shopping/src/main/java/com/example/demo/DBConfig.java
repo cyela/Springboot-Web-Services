@@ -69,11 +69,5 @@ public class DBConfig {
 		transactionManager.setSessionFactory(sessionFactory().getObject());
 		return transactionManager;
 	}
-	/*
-	 * @Bean public WebMvcConfigurer corsConfigurer() { return new
-	 * WebMvcConfigurerAdapter() {
-	 *
-	 * @Override public void addCorsMappings(CorsRegistry registry) {
-	 * registry.addMapping("/user").allowedOrigins("http://localhost:3000"); } }; }
-	 */
+
 }

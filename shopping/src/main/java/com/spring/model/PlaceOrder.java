@@ -2,6 +2,7 @@ package com.spring.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,14 +10,23 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "PlaceOrder")
+@Table(name = "Place_Order")
 public class PlaceOrder {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "order_id")
 	private int orderId;
-	private String email, orderStatus;
+
+	private String email;
+
+	@Column(name = "order_status")
+	private String orderStatus;
+
+	@Column(name = "order_date")
 	private Date orderDate;
+
+	@Column(name = "total_cost")
 	private double totalCost;
 
 	public int getOrderId() {

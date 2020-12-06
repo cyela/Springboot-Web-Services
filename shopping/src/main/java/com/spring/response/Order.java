@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.spring.model.Bufcart;
 
-public class order {
+public class Order {
 	private int orderId;
 	private String orderBy;
 	private String orderStatus;

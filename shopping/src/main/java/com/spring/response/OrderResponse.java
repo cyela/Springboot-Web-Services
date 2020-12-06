@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.spring.model.Bufcart;
 
-public class orderResp {
+public class OrderResponse {
 
 	private int orderId;
 
