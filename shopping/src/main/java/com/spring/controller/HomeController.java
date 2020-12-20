@@ -92,7 +92,7 @@ public class HomeController {
 			} else {
 				resp.setStatus(ResponseCode.SUCCESS_CODE);
 				resp.setMessage(ResponseCode.CUST_REG);
-				User reg = userRepo.save(user);
+				userRepo.save(user);
 			}
 		} catch (Exception e) {
 			throw new UserCustomException("An error occured while saving user, please check details or try again");

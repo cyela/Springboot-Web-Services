@@ -12,6 +12,10 @@ import com.spring.model.User;
 
 public class MyUserDetails implements UserDetails {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2236015531002205656L;
 	private String username;
 	private String password;
 	private boolean active;

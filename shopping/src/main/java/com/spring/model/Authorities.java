@@ -13,6 +13,10 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Authorities implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6005072159059903199L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "AUTHORITY_ID")

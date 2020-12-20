@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +47,9 @@ public class AdminController {
 
 	@Autowired
 	private CartRepository cartRepo;
+	
+	@Autowired
+	private JmsTemplate jmsTemplate;
 
 	@PostMapping("/addProduct")
 	public ResponseEntity<ProductResponse> addProduct(
@@ -71,7 +75,7 @@ public class AdminController {
 					prod.setProductimage(prodImage.getBytes());
 				}
 				prodRepo.save(prod);
-
+				jmsTemplate.convertAndSend("product_queue", prod);
 				resp.setStatus(ResponseCode.SUCCESS_CODE);
 				resp.setMessage(ResponseCode.ADD_SUCCESS_MESSAGE);
 				resp.setOblist(prodRepo.findAll());
