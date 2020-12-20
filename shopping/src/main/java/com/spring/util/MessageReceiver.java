@@ -12,7 +12,7 @@ public class MessageReceiver {
 
 	@JmsListener(destination = MESSAGE_QUEUE)
 	public void receiveMessage(Product product) {
-		System.out.println("Product " + product.getProductname() + " added successfully");
+		System.out.println("Product " + product.getProductname() + "has been added successfully");
 	}
 
 }

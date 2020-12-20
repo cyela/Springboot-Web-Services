@@ -26,8 +26,7 @@ public class JMSConfiguration {
 
 	@Bean
 	public MessageConverter jacksonJmsMessageConverter() {
-		// Convert object to message understandable by ActiveMQ
-		// Convert message to Object also
+		
 		MappingJackson2MessageConverter convert = new MappingJackson2MessageConverter();
 		convert.setTargetType(MessageType.TEXT);
 		convert.setTypeIdPropertyName("_type");
