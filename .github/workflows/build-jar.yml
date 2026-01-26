@@ -32,5 +32,6 @@ jobs:
     - name: Upload JAR artifact
       uses: actions/upload-artifact@v4
       with:
-        name: app-jar-java8
-        path: app/target/*.jar
+        name: shopping-jar-java8
+        path: shopping/target/*.jar
+
