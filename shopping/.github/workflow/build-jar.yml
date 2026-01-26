@@ -22,11 +22,15 @@ jobs:
         java-version: '8'
         cache: maven
 
-    - name: Build with Maven
+    - name: Verify Java version
+      run: java -version
+
+    - name: Build with Maven (app folder)
+      working-directory: shopping
       run: mvn clean package -DskipTests
 
     - name: Upload JAR artifact
       uses: actions/upload-artifact@v4
       with:
         name: app-jar-java8
-        path: target/*.jar
+        path: app/target/*.jar
