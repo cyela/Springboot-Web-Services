@@ -10,7 +10,7 @@ import com.spring.model.PlaceOrder;
 
 @Repository
 @Transactional
-public interface OrderRepository extends JpaRepository<PlaceOrder, Long> {
+public interface OrderRepository extends JpaRepository<PlaceOrder, Integer> {
 
 	PlaceOrder findByOrderId(int orderId);
 

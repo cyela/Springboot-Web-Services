@@ -18,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.spring.filter.JwtRequestFilter;
 import com.spring.service.MyUserDetailService;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -49,7 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
-		// TODO Auto-generated method stub
+
 		return super.authenticationManagerBean();
 	}
 
