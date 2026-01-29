@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import com.example.demo.ShoppingApplication;
+import com.spring.ShoppingApplication;
 import com.spring.exception.UserCustomException;
 import com.spring.model.User;
 

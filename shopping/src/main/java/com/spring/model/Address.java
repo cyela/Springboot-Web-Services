@@ -28,7 +28,7 @@ public class Address implements Serializable {
 	private int zipcode;
 	private String phonenumber;
 
-	@OneToOne(fetch = FetchType.LAZY, optional = false)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "userid", nullable = false)
 	private User user;
 
